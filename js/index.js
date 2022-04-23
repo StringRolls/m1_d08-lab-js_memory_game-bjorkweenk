@@ -27,7 +27,20 @@ const cards = [
 
 const memoryGame = new MemoryGame(cards);
 
+function flipCard(card) {
+  card.classList.toggle('turned');
+}
+
+function printScore(score){
+  document.getElementById('points span').innerText = score;
+}
+
+function setCardToGuessed(card){
+  card.classList.add('guessed');
+}
+
 window.addEventListener('load', (event) => {
+  console.log('JS loaded');
   let html = '';
   memoryGame.cards.forEach((pic) => {
     html += `
@@ -43,9 +56,18 @@ window.addEventListener('load', (event) => {
 
   // Bind the click event of each element to a function
   document.querySelectorAll('.card').forEach((card) => {
-    card.addEventListener('click', () => {
-      // TODO: write some code here
-      console.log(`Card clicked: ${card}`);
+    card.addEventListener('click', (event) => {
+      const card = event.currentTarget;
+      flipCard(card);
+      const playResults = memoryGame.playCard(card);
+      if (playResults.isPair === false) {
+        playResults.cards.forEach((card) =>
+          setTimeout(() => flipCard(card), 1 * 1000)
+        );
+      } else {
+        playResult.cards.forEach((card) => setCardToGuessed(card));
+        printScore(playResults.score);
+      }
     });
   });
 });
